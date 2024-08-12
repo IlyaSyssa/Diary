@@ -14,14 +14,19 @@
     </ion-header>
   
     <div class="ion-padding" v-for="(card, index) in cards" :key="index">
-      <ion-card>
+      <ion-card @click="editCard(index)">
         <ion-card-header>
-          <ion-card-title>{{ card.title }}</ion-card-title>
-          <ion-card-subtitle>{{ card.subtitle }}</ion-card-subtitle>
+          <ion-card-title v-if="!card.isEditing">{{ card.title }}</ion-card-title>
+          <input v-else v-model="card.title" @blur="saveCard(index)" />
+          
+          <ion-card-subtitle v-if="!card.isEditing">{{ card.subtitle }}</ion-card-subtitle>
+          <textarea v-else v-model="card.subtitle" @blur="saveCard(index)" />
         </ion-card-header>
-        <ion-card-content>
+        
+        <ion-card-content v-if="!card.isEditing">
           {{ card.content }}
         </ion-card-content>
+        <textarea v-else v-model="card.content" @blur="saveCard(index)" />
       </ion-card>
     </div>
   </ion-content>
@@ -56,22 +61,31 @@ export default defineComponent({
   setup() {
     const cards = ref([
       {
-        title: "Название ",
+        title: "Название 1",
         subtitle: "Ваша запись 1",
-        content: "Введите текст ",
+        content: "Введите текст 1",
+        isEditing: false,
       }
     ]);
 
     const addCard = () => {
-      const newCard = {
-        title: `Название`,
-        subtitle: `Ваша запись ${cards.value.length + 1}`,
-        content: `Введите текст`,
-      };
-      cards.value.push(newCard);
+      cards.value.push({
+        title: "Название",
+        subtitle: "Ваша запись",
+        content: "Введите текст",
+        isEditing: false,
+      });
     };
 
-    return { add, cards, addCard };
+    const editCard = (index: number) => {
+      cards.value[index].isEditing = true;
+    };
+
+    const saveCard = (index: number) => {
+      cards.value[index].isEditing = false;
+    };
+
+    return { add, cards, addCard, editCard, saveCard };
   },
 });
 </script>
@@ -79,5 +93,8 @@ export default defineComponent({
 <style>
   .diaryImg {
     width: 70px;
+  }
+  input, textarea {
+    width: 100%;
   }
 </style>
