@@ -28,6 +28,9 @@
         </ion-card-content>
         <textarea v-else v-model="card.content" @blur="saveCard(index)" />
       </ion-card>
+      
+      <!-- Передаём индекс карточки в метод удаления -->
+      <ion-button fill="outline" @click="deleteCard(index)">Удалить запись</ion-button>
     </div>
   </ion-content>
   
@@ -41,7 +44,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { add } from 'ionicons/icons';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonIcon } from '@ionic/vue';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonIcon, IonButton } from '@ionic/vue';
 
 export default defineComponent({
   components: {
@@ -56,7 +59,8 @@ export default defineComponent({
     IonCardTitle,
     IonFab,
     IonFabButton,
-    IonIcon
+    IonIcon,
+    IonButton
   },
   setup() {
     const cards = ref([
@@ -77,6 +81,11 @@ export default defineComponent({
       });
     };
 
+    // Метод для удаления карточки по индексу
+    const deleteCard = (index: number) => {
+      cards.value.splice(index, 1);
+    };
+
     const editCard = (index: number) => {
       cards.value[index].isEditing = true;
     };
@@ -85,7 +94,7 @@ export default defineComponent({
       cards.value[index].isEditing = false;
     };
 
-    return { add, cards, addCard, editCard, saveCard };
+    return { add, cards, addCard, editCard, saveCard, deleteCard };
   },
 });
 </script>
