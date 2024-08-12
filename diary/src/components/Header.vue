@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted, watch } from 'vue';
 import { add } from 'ionicons/icons';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonIcon, IonButton } from '@ionic/vue';
 
@@ -63,14 +63,20 @@ export default defineComponent({
     IonButton
   },
   setup() {
-    const cards = ref([
-      {
-        title: "Название 1",
-        subtitle: "Ваша запись 1",
-        content: "Введите текст 1",
-        isEditing: false,
+    const cards = ref([]);
+
+    // Загрузка данных из LocalStorage при загрузке приложения
+    onMounted(() => {
+      const savedCards = localStorage.getItem('cards');
+      if (savedCards) {
+        cards.value = JSON.parse(savedCards);
       }
-    ]);
+    });
+
+    // Сохранение данных в LocalStorage при изменении карточек
+    watch(cards, (newCards) => {
+      localStorage.setItem('cards', JSON.stringify(newCards));
+    }, { deep: true });
 
     const addCard = () => {
       cards.value.push({
@@ -81,7 +87,6 @@ export default defineComponent({
       });
     };
 
-    // Метод для удаления карточки по индексу
     const deleteCard = (index: number) => {
       cards.value.splice(index, 1);
     };
