@@ -11,6 +11,7 @@
       <ion-toolbar>
         <ion-title size="large">Дневник</ion-title>
       </ion-toolbar>
+      <ion-toggle @click="toggleDarkTheme">Default Toggle</ion-toggle>
     </ion-header>
   
     <div class="ion-padding" v-for="(card, index) in cards" :key="index">
@@ -44,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue';
 import { add } from 'ionicons/icons';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonIcon, IonButton } from '@ionic/vue';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonFab, IonFabButton, IonIcon, IonButton, IonToggle } from '@ionic/vue';
 
 export default defineComponent({
   components: {
@@ -60,10 +61,19 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonIcon,
-    IonButton
+    IonButton,
+    IonToggle
   },
   setup() {
     const cards = ref([]);
+
+    const toggleDarkTheme = (e) => {
+      console.log(e)
+      document.body.classList.toggle('dark');
+      document
+                .querySelector('meta[name="theme-color"]')
+                ?.setAttribute("content", e.detail.checked ? "#000" : "#f7f7f7");
+    };
 
     // Загрузка данных из LocalStorage при загрузке приложения
     onMounted(() => {
@@ -99,9 +109,10 @@ export default defineComponent({
       cards.value[index].isEditing = false;
     };
 
-    return { add, cards, addCard, editCard, saveCard, deleteCard };
-  },
+    return { add, cards, addCard, editCard, saveCard, deleteCard, toggleDarkTheme };
+}
 });
+
 </script>
 
 <style>
@@ -111,4 +122,6 @@ export default defineComponent({
   input, textarea {
     width: 100%;
   }
+
+  
 </style>
